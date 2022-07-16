@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+  <name>wish list without login</name>                
+  <code>wish_list_without_login</code>                
+  <version>1.0</version>           
+  <author>vvvdata</author>           
+  <link>https://vvvdata.ru</link>  
+ 
+<file path="catalog/controller/account/wishlist.php">  
+  <operation>
+    <search>                           
+      <![CDATA[if (!$this->customer->isLogged()) {]]>
+    </search>
+    <add position="before">             
+      <![CDATA[ /* ]]>
+    </add>
+  </operation>
+  <operation>
+    <search>                           
+      <![CDATA[$this->response->redirect($this->url->link('account/login', '', true));]]>
+    </search>
+    <add position="after" offset="1">             
+      <![CDATA[ 
+      */ 
+      ]]>
+    </add>
+  </operation>
+  <operation>
+    <search>                           
+      <![CDATA[$this->model_account_wishlist->deleteWishlist($this->request->get['remove']);]]>
+    </search>
+    <add position="before">             
+      <![CDATA[ 
+      if (!$this->customer->isLogged()){					
+			if(isset($this->session->data['wishlist']) && count($this->session->data['wishlist']) > 0){	
+			  if(($key = array_search($this->request->get['remove'], $this->session->data['wishlist'])) !== false)
+			    unset($this->session->data['wishlist'][$key]);			
+			  }
+		  }
+		  else 
+      ]]>
+    </add>
+  </operation>
+  <operation>
+    <search>                           
+      <![CDATA[$results = $this->model_account_wishlist->getWishlist();]]>
+    </search>
+    <add position="before">             
+      <![CDATA[ 
+    if (!$this->customer->isLogged()){
+			$results = array();
+			if(isset($this->session->data['wishlist']) && count($this->session->data['wishlist']) > 0){
+			  $this->session->data['wishlist'] = array_unique($this->session->data['wishlist']);
+			  $res = $this->session->data['wishlist'];
+			  foreach ($res as $r)
+			  $results[]['product_id'] = $r;
+			}
+		}
+		else 
+      ]]>
+    </add>
+  </operation>
+  <operation error="skip">
+    <search>                           
+      <![CDATA[$json['success'] = sprintf($this->language->get('text_login'), $this->url->link('account/login', '', true), $this->url->link('account/register', '', true), $this->url->link('product/product', 'product_id=' . (int)$this->request->post['product_id']), $product_info['name'], $this->url->link('account/wishlist'));]]>
+    </search>
+    <add position="replace">             
+      <![CDATA[$json['success'] = sprintf($this->language->get('text_success'), $this->url->link('product/product', 'product_id=' . (int)$this->request->post['product_id']), $product_info['name'], $this->url->link('account/wishlist'));]]>
+    </add>
+  </operation>
+</file>
+<file path="catalog/controller/account/register.php">  
+  <operation>
+    <search>                           
+      <![CDATA[unset($this->session->data['guest']);]]>
+    </search>
+    <add position="after">             
+      <![CDATA[
+      if (isset($this->session->data['wishlist']) && is_array($this->session->data['wishlist'])) {
+				$this->load->model('account/wishlist');
+				foreach ($this->session->data['wishlist'] as $key => $product_id) {
+					$this->model_account_wishlist->addWishlist($product_id);
+					unset($this->session->data['wishlist'][$key]);
+				}
+			}
+      ]]>
+    </add>
+  </operation>
+</file>
+</modification>

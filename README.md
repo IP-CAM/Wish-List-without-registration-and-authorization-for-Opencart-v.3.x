@@ -9,3 +9,10 @@ The plugin also fixes a bug when Wish List are lost after registration.
 Также модификатор устраняет баг, при котором закладки теряются после регистрации.
 
 ![screenshot](https://user-images.githubusercontent.com/106067946/180002489-d4a46c4f-028a-4342-bb1f-704022ace809.jpg)
+
+## Установка
+* Скачайте install.xml. 
+* Запакуйте его в zip архив. 
+* Переименуйте архив в wish_list_without_login.ocmod.zip.
+* В - Модули / Расширения - Установка расширений  - загрузите архив.
+* В - Модификаторы - обновите модификаторы.

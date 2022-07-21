@@ -3,7 +3,7 @@
   <name>wish list without login</name>                
   <code>wish_list_without_login</code>                
   <version>1.0</version>           
-  <author>vvvdata</author>           
+  <author>vvv-data</author>           
   <link>https://vvvdata.ru</link>  
  
 <file path="catalog/controller/account/wishlist.php">  
